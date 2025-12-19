@@ -1,0 +1,34 @@
+name: UltraSpawners
+version: 1.0.2
+main: me.koopa.ultraspawners.UltraSpawners
+description: Advanced spawner management plugin for Paper 1.21.4
+author: Koopa
+website: https://modrinth.com/user/Koopa
+api-version: '1.21'
+
+depend: []
+softdepend: [Vault]
+
+commands:
+  ultraspawners:
+    description: Main UltraSpawners command
+    aliases: [us]
+    usage: /ultraspawners <reload|give|inspect|settype|setstack|settier|menu>
+    permission: ultraspawners.use
+
+permissions:
+  ultraspawners.use:
+    description: Allow use of UltraSpawners commands
+    default: true
+  ultraspawners.admin:
+    description: Full admin access to all commands
+    default: op
+  ultraspawners.give:
+    description: Give spawner items to players
+    default: op
+  ultraspawners.edit:
+    description: Edit spawners with commands
+    default: op
+  ultraspawners.menu:
+    description: Access upgrade menu
+    default: true

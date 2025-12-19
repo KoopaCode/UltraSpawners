@@ -1,0 +1,127 @@
+# UltraSpawners Configuration
+# Advanced spawner management for Paper 1.21.4
+# Generated for version 1.0.0
+
+general:
+  # Plugin prefix for messages
+  prefix: "&8[&5UltraSpawners&8] &r"
+  # Debug logging
+  debug: false
+
+drops:
+  # Drop spawner item when broken with any tool
+  dropOnBreak: true
+  # Drop spawner item on explosion
+  dropOnExplosion: true
+
+stacking:
+  # Enable spawner stacking
+  enable: true
+  # Maximum spawners per block (0 = unlimited)
+  maxStackPerBlock: 0
+  # Merge different mob types (false = keep separate)
+  mergeDifferentTypes: false
+
+upgrades:
+  # Enable upgrade system
+  enable: true
+  # Maximum upgrade tier (0 = base tier only)
+  maxTier: 4
+  # Payment mode: ITEMS, VAULT, or BOTH
+  paymentMode: ITEMS
+  
+  tiers:
+    # Tier 0 (base spawner, no cost)
+    0:
+      displayName: "&7Base Spawner"
+      vaultCost: 0
+      spawnDelay: 10
+      spawnCount: 1
+      nearbyEntityLimit: 16
+      playerRange: 16
+      requiredItems: []
+    
+    # Tier 1
+    1:
+      displayName: "&9Tier 1 Spawner"
+      vaultCost: 1000
+      spawnDelay: 5
+      spawnCount: 2
+      nearbyEntityLimit: 20
+      playerRange: 20
+      requiredItems:
+        - "DIAMOND:1"
+        - "EMERALD:1"
+    
+    # Tier 2
+    2:
+      displayName: "&bTier 2 Spawner"
+      vaultCost: 5000
+      spawnDelay: 3
+      spawnCount: 3
+      nearbyEntityLimit: 30
+      playerRange: 24
+      requiredItems:
+        - "DIAMOND_BLOCK:1"
+        - "EMERALD_BLOCK:1"
+    
+    # Tier 3
+    3:
+      displayName: "&3Tier 3 Spawner"
+      vaultCost: 15000
+      spawnDelay: 2
+      spawnCount: 4
+      nearbyEntityLimit: 40
+      playerRange: 28
+      requiredItems:
+        - "DIAMOND_BLOCK:2"
+        - "EMERALD_BLOCK:2"
+        - "NETHER_STAR:1"
+    
+    # Tier 4
+    4:
+      displayName: "&5Tier 4 Spawner"
+      vaultCost: 50000
+      spawnDelay: 1
+      spawnCount: 5
+      nearbyEntityLimit: 50
+      playerRange: 32
+      requiredItems:
+        - "DIAMOND_BLOCK:5"
+        - "EMERALD_BLOCK:5"
+        - "NETHER_STAR:2"
+
+economy:
+  # Enable Vault economy integration
+  vaultEnable: false
+  # Message when Vault is disabled or missing
+  vaultDisabledMessage: "&cVault is disabled or not installed. Use item payment instead."
+
+performance:
+  # Hard cap on spawns per trigger
+  spawnCapPerTrigger: 20
+  # Enable TPS guard (scale spawns if TPS drops)
+  enableTpsGuard: true
+  # TPS threshold to reduce spawning
+  tpsThreshold: 15.0
+  # Minimum spawn count even at low TPS
+  minimumSpawnAtLowTps: 1
+
+storage:
+  # Database type: SQLITE or MYSQL
+  type: SQLITE
+  
+  # SQLite settings
+  sqlite:
+    # File path relative to server root
+    filePath: "plugins/UltraSpawners/database.db"
+  
+  # MySQL settings (ignored if type is SQLITE)
+  mysql:
+    host: "localhost"
+    port: 3306
+    database: "ultraspawners"
+    username: "root"
+    password: "password"
+    useSSL: false
+    maxPoolSize: 10
