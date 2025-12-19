@@ -4,7 +4,7 @@ UltraSpawners is in active development.
 The plugin works, but some features are incomplete, unstable, or disabled.
 Expect bugs and breaking changes.
 
-Advanced spawner management plugin for Paper 1.21.4 Minecraft servers.
+Advanced spawner management plugin for Paper 1.21.x Minecraft servers.
 Free and open source.
 
 Issues and bug reports:
