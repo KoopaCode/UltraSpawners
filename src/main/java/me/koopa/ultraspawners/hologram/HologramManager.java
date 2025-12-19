@@ -40,7 +40,7 @@ public class HologramManager {
         ConfigManager.TierConfig tierConfig = configManager.getTierConfig(tier);
         String tierName = tierConfig != null ? tierConfig.displayName : "§7Tier " + tier;
 
-        String displayName = String.format("§6§l⚡ %s Spawner §6§l⚡\n§7Stack: §e§l%,d §8§l┃ %s\n§7§oLeft-click to upgrade",
+        String displayName = String.format("§6§l[%s Spawner]\n§7Stack: §e§l%,d §8§l| %s\n§7§oLeft-click to upgrade",
             formatMobName(mobType), stack, tierName);
         
         hologram.setCustomName(displayName);

@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "me.koopa"
-version = "1.0.2"
+version = "1.0.3"
 
 java {
     toolchain {
