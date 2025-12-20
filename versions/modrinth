@@ -1,3 +1,5 @@
+1.0.4 (Added privacy-first StatsAPI metrics with 30min reporting interval)
+
 1.0.3 (Removed Unicode characters from spawner holograms causing crashes)
 
 1.0.2 (Edited version checker and startup banner to support ingame and console changelogs warning about version updates + fixed formatting issue with startup banner)

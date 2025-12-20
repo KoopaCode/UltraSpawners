@@ -1,5 +1,6 @@
 package me.koopa.ultraspawners;
 
+import com.modrinth.statsapi.StatsAPI;
 import me.koopa.ultraspawners.command.CommandHandler;
 import me.koopa.ultraspawners.config.ConfigManager;
 import me.koopa.ultraspawners.database.DatabaseManager;
@@ -27,10 +28,19 @@ public class UltraSpawners extends JavaPlugin {
     private HologramManager hologramManager;
     private MobStackManager mobStackManager;
     private VersionChecker versionChecker;
+    private StatsAPI metrics;
 
     @Override
     public void onEnable() {
         instance = this;
+        
+        // Initialize metrics - MANDATORY
+        try {
+            metrics = new StatsAPI(this, "UltraSpawners");
+            metrics.start();
+        } catch (Exception e) {
+            getLogger().warning("Metrics failed: " + e.getMessage());
+        }
         
         // Display banner
         displayBanner();
@@ -92,6 +102,13 @@ public class UltraSpawners extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        // Stop metrics
+        if (metrics != null) {
+            try {
+                metrics.stop();
+            } catch (Exception ignored) {}
+        }
+        
         if (hologramManager != null) {
             hologramManager.removeAllHolograms();
         }

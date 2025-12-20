@@ -3,7 +3,7 @@ plugins {
 }
 
 group = "me.koopa"
-version = "1.0.3"
+version = "1.0.4"
 
 java {
     toolchain {
@@ -23,6 +23,9 @@ dependencies {
     implementation("com.zaxxer:HikariCP:5.1.0")
     implementation("org.xerial:sqlite-jdbc:3.45.2.0")
     implementation("com.mysql:mysql-connector-j:8.3.0")
+    
+    // StatsAPI - Privacy-first metrics
+    implementation("com.google.code.gson:gson:2.10.1")
     
     compileOnly("com.github.MilkBowl:VaultAPI:1.7") {
         exclude(group = "org.bukkit")
