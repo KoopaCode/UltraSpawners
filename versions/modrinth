@@ -1,4 +1,4 @@
-1.0.5-1 (Fixed formatting of the update notification message in PlayerJoinListener)
+1.0.6 (Fixed formatting of the update notification message in PlayerJoinListener)
 
 1.0.5 (Added right click menu access, proximity auto merge within 2 blocks, shift+right click hand held spawner inspection, per world spawn caps. Fixed GUI buttons not responding, spawner placement opening menu, upgrade system bugs, duplicate messages, give command showing "0x", tier display issues, color code rendering throughout plugin. Removed brackets from spawner holograms)
 
