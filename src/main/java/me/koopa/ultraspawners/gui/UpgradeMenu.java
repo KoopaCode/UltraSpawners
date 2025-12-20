@@ -3,6 +3,7 @@ package me.koopa.ultraspawners.gui;
 import me.koopa.ultraspawners.config.ConfigManager;
 import me.koopa.ultraspawners.database.DatabaseManager;
 import me.koopa.ultraspawners.service.SpawnerService;
+import me.koopa.ultraspawners.util.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -36,7 +37,7 @@ public class UpgradeMenu {
         );
 
         if (spawner == null) {
-            player.sendMessage(configManager.getPrefix() + "§cNo spawner data found!");
+            player.sendMessage(configManager.getPrefix() + "&cNo spawner data found!");
             return;
         }
 
@@ -44,7 +45,7 @@ public class UpgradeMenu {
         int inventorySize = ((maxTier + 2) / 9) * 9;
         if (inventorySize < 9) inventorySize = 9;
 
-        Inventory inv = Bukkit.createInventory(null, inventorySize, "§5Spawner Upgrades");
+        Inventory inv = Bukkit.createInventory(null, inventorySize, ColorUtil.color("&5Spawner Upgrades"));
 
         for (int tier = 0; tier <= maxTier; tier++) {
             ConfigManager.TierConfig tierConfig = configManager.getTierConfig(tier);
@@ -58,26 +59,26 @@ public class UpgradeMenu {
 
                 List<String> lore = new ArrayList<>();
                 if (tier <= spawner.tier) {
-                    lore.add("§7Status: §aOwned");
+                    lore.add(ColorUtil.color("&7Status: &aOwned"));
                 } else {
-                    lore.add("§7Status: §6Available");
+                    lore.add(ColorUtil.color("&7Status: &6Available"));
                     if ("VAULT".equals(configManager.getPaymentMode()) || "BOTH".equals(configManager.getPaymentMode())) {
                         if (configManager.isVaultEnabled()) {
-                            lore.add("§7Cost: §6$" + tierConfig.vaultCost);
+                            lore.add(ColorUtil.color("&7Cost: &6$" + tierConfig.vaultCost));
                         }
                     }
                     if ("ITEMS".equals(configManager.getPaymentMode()) || "BOTH".equals(configManager.getPaymentMode())) {
                         for (String item : tierConfig.requiredItems) {
-                            lore.add("§7Need: §r" + item);
+                            lore.add(ColorUtil.color("&7Need: &r" + item));
                         }
                     }
                 }
 
                 lore.add("");
-                lore.add("§7Spawn Delay: §r" + tierConfig.spawnDelay);
-                lore.add("§7Spawn Count: §r" + tierConfig.spawnCount);
-                lore.add("§7Entity Limit: §r" + tierConfig.nearbyEntityLimit);
-                lore.add("§7Player Range: §r" + tierConfig.playerRange);
+                lore.add(ColorUtil.color("&7Spawn Delay: &r" + tierConfig.spawnDelay));
+                lore.add(ColorUtil.color("&7Spawn Count: &r" + tierConfig.spawnCount));
+                lore.add(ColorUtil.color("&7Entity Limit: &r" + tierConfig.nearbyEntityLimit));
+                lore.add(ColorUtil.color("&7Player Range: &r" + tierConfig.playerRange));
 
                 meta.setLore(lore);
                 icon.setItemMeta(meta);

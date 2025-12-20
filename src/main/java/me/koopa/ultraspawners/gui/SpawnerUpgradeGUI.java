@@ -3,6 +3,7 @@ package me.koopa.ultraspawners.gui;
 import me.koopa.ultraspawners.UltraSpawners;
 import me.koopa.ultraspawners.config.ConfigManager;
 import me.koopa.ultraspawners.database.DatabaseManager;
+import me.koopa.ultraspawners.util.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -28,7 +29,7 @@ public class SpawnerUpgradeGUI implements Listener {
     }
 
     public void open(Player player, Block spawnerBlock, DatabaseManager.StoredSpawner spawner) {
-        Inventory inv = Bukkit.createInventory(null, 54, "§6§lSpawner Upgrade Station");
+        Inventory inv = Bukkit.createInventory(null, 54, ColorUtil.color("&6&lSpawner Upgrade Station"));
 
         // Info section
         inv.setItem(4, createInfoItem(spawner));
@@ -73,6 +74,7 @@ public class SpawnerUpgradeGUI implements Listener {
             inv.setItem(i, border);
         }
 
+        // Add session BEFORE opening inventory to prevent race condition
         sessions.put(player.getUniqueId(), new GuiSession(spawnerBlock, spawner));
         player.openInventory(inv);
     }
@@ -81,19 +83,19 @@ public class SpawnerUpgradeGUI implements Listener {
         ItemStack item = new ItemStack(Material.SPAWNER);
         ItemMeta meta = item.getItemMeta();
         
-        meta.setDisplayName("§6§l" + formatMobName(spawner.type) + " Spawner");
+        meta.setDisplayName(ColorUtil.color("&6&l" + formatMobName(spawner.type) + " Spawner"));
         
         List<String> lore = new ArrayList<>();
         lore.add("");
-        lore.add("§7Mob Type: §f" + formatMobName(spawner.type));
-        lore.add("§7Stack Amount: §e" + String.format("%,d", spawner.stack));
-        lore.add("§7Current Tier: §b" + spawner.tier);
+        lore.add(ColorUtil.color("&7Mob Type: &f" + formatMobName(spawner.type)));
+        lore.add(ColorUtil.color("&7Stack Amount: &e" + String.format("%,d", spawner.stack)));
+        lore.add(ColorUtil.color("&7Current Tier: &b" + spawner.tier));
         if (spawner.owner != null) {
-            lore.add("§7Owner: §f" + spawner.owner);
+            lore.add(ColorUtil.color("&7Owner: &f" + spawner.owner));
         }
         lore.add("");
-        lore.add("§8World: " + spawner.world);
-        lore.add("§8Location: " + spawner.x + ", " + spawner.y + ", " + spawner.z);
+        lore.add(ColorUtil.color("&8World: " + spawner.world));
+        lore.add(ColorUtil.color("&8Location: " + spawner.x + ", " + spawner.y + ", " + spawner.z));
         
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -106,8 +108,8 @@ public class SpawnerUpgradeGUI implements Listener {
         ItemStack item = new ItemStack(Material.EMERALD);
         ItemMeta meta = item.getItemMeta();
         
-        String tierName = config != null ? config.displayName : "§7Tier " + spawner.tier;
-        meta.setDisplayName(tierName + " §7(Current)");
+        String tierName = config != null ? config.displayName : "&7Tier " + spawner.tier;
+        meta.setDisplayName(ColorUtil.color(tierName + " &7(Current)"));
         
         item.setItemMeta(meta);
         return item;
@@ -119,20 +121,20 @@ public class SpawnerUpgradeGUI implements Listener {
         ItemStack item = new ItemStack(Material.NETHER_STAR);
         ItemMeta meta = item.getItemMeta();
         
-        String tierName = config != null ? config.displayName : "§7Tier " + tier;
-        meta.setDisplayName("§e§lUpgrade to " + tierName);
+        String tierName = config != null ? config.displayName : "&7Tier " + tier;
+        meta.setDisplayName(ColorUtil.color("&e&lUpgrade to " + tierName));
         
         List<String> lore = new ArrayList<>();
         lore.add("");
-        lore.add("§7Click the button below to upgrade!");
+        lore.add(ColorUtil.color("&7Click the button below to upgrade!"));
         lore.add("");
         
         if (config != null && !config.requiredItems.isEmpty()) {
-            lore.add("§6Required Items:");
+            lore.add(ColorUtil.color("&6Required Items:"));
             for (String itemStr : config.requiredItems) {
                 String[] parts = itemStr.split(":");
                 if (parts.length == 2) {
-                    lore.add("  §7• §f" + parts[1] + "x §e" + formatMaterialName(parts[0]));
+                    lore.add(ColorUtil.color("  &7• &f" + parts[1] + "x &e" + formatMaterialName(parts[0])));
                 }
             }
         }
@@ -146,12 +148,12 @@ public class SpawnerUpgradeGUI implements Listener {
         ItemStack item = new ItemStack(Material.BARRIER);
         ItemMeta meta = item.getItemMeta();
         
-        meta.setDisplayName("§c§lMAX TIER REACHED");
+        meta.setDisplayName(ColorUtil.color("&c&lMAX TIER REACHED"));
         
         List<String> lore = new ArrayList<>();
         lore.add("");
-        lore.add("§7This spawner is at maximum tier!");
-        lore.add("§7No further upgrades available.");
+        lore.add(ColorUtil.color("&7This spawner is at maximum tier!"));
+        lore.add(ColorUtil.color("&7No further upgrades available."));
         
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -169,10 +171,10 @@ public class SpawnerUpgradeGUI implements Listener {
         List<String> lore = new ArrayList<>();
         lore.add("");
         if (config != null) {
-            lore.add("§7Spawn Delay: §f" + config.spawnDelay + " ticks");
-            lore.add("§7Spawn Count: §f" + config.spawnCount + " per cycle");
-            lore.add("§7Entity Limit: §f" + config.nearbyEntityLimit);
-            lore.add("§7Player Range: §f" + config.playerRange + " blocks");
+            lore.add(ColorUtil.color("&7Spawn Delay: &f" + config.spawnDelay + " ticks"));
+            lore.add(ColorUtil.color("&7Spawn Count: &f" + config.spawnCount + " per cycle"));
+            lore.add(ColorUtil.color("&7Entity Limit: &f" + config.nearbyEntityLimit));
+            lore.add(ColorUtil.color("&7Player Range: &f" + config.playerRange + " blocks"));
         }
         
         meta.setLore(lore);
@@ -184,12 +186,12 @@ public class SpawnerUpgradeGUI implements Listener {
         ItemStack item = new ItemStack(Material.LIME_STAINED_GLASS_PANE);
         ItemMeta meta = item.getItemMeta();
         
-        meta.setDisplayName("§a§lCLICK TO UPGRADE");
+        meta.setDisplayName(ColorUtil.color("&a&lCLICK TO UPGRADE"));
         
         List<String> lore = new ArrayList<>();
         lore.add("");
-        lore.add("§7Place required items in your");
-        lore.add("§7inventory, then click here!");
+        lore.add(ColorUtil.color("&7Place required items in your"));
+        lore.add(ColorUtil.color("&7inventory, then click here!"));
         
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -200,8 +202,8 @@ public class SpawnerUpgradeGUI implements Listener {
         ItemStack item = new ItemStack(Material.RED_STAINED_GLASS_PANE);
         ItemMeta meta = item.getItemMeta();
         
-        meta.setDisplayName("§c§lCLOSE");
-        meta.setLore(Arrays.asList("", "§7Click to close this menu"));
+        meta.setDisplayName(ColorUtil.color("&c&lCLOSE"));
+        meta.setLore(Arrays.asList("", ColorUtil.color("&7Click to close this menu")));
         
         item.setItemMeta(meta);
         return item;
@@ -210,7 +212,7 @@ public class SpawnerUpgradeGUI implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
-        if (!event.getView().getTitle().equals("§6§lSpawner Upgrade Station")) return;
+        if (!event.getView().getTitle().equals(ColorUtil.color("&6&lSpawner Upgrade Station"))) return;
 
         event.setCancelled(true);
 
@@ -236,13 +238,13 @@ public class SpawnerUpgradeGUI implements Listener {
         int nextTier = currentTier + 1;
 
         if (nextTier > plugin.getConfigManager().getMaxTier()) {
-            player.sendMessage(plugin.getConfigManager().getPrefix() + "§cSpawner is already at max tier!");
+            player.sendMessage(plugin.getConfigManager().getPrefix() + ColorUtil.color("&cSpawner is already at max tier!"));
             return;
         }
 
         ConfigManager.TierConfig config = plugin.getConfigManager().getTierConfig(nextTier);
         if (config == null) {
-            player.sendMessage(plugin.getConfigManager().getPrefix() + "§cInvalid tier configuration!");
+            player.sendMessage(plugin.getConfigManager().getPrefix() + ColorUtil.color("&cInvalid tier configuration!"));
             return;
         }
 
@@ -262,12 +264,16 @@ public class SpawnerUpgradeGUI implements Listener {
         }
 
         // Check if player has items
+        List<String> missingItems = new ArrayList<>();
         for (Map.Entry<Material, Integer> entry : required.entrySet()) {
             if (!player.getInventory().containsAtLeast(new ItemStack(entry.getKey()), entry.getValue())) {
-                player.sendMessage(plugin.getConfigManager().getPrefix() + "§cYou need " + entry.getValue() + "x " + 
-                    formatMaterialName(entry.getKey().name()) + "!");
-                return;
+                missingItems.add(entry.getValue() + "x " + formatMaterialName(entry.getKey().name()));
             }
+        }
+        
+        if (!missingItems.isEmpty()) {
+            player.sendMessage(plugin.getConfigManager().getPrefix() + ColorUtil.color("&cYou need: " + String.join(", ", missingItems)));
+            return;
         }
 
         // Consume items
@@ -278,19 +284,27 @@ public class SpawnerUpgradeGUI implements Listener {
 
         // Upgrade spawner
         try {
-            plugin.getDatabaseManager().saveSpawner(new DatabaseManager.StoredSpawner(
-                session.spawner.world, session.spawner.x, session.spawner.y, session.spawner.z,
-                session.spawner.type, session.spawner.stack, nextTier, session.spawner.owner
-            ));
+            // Only save to database if it's a placed spawner (not hand-held)
+            if (session.block != null) {
+                plugin.getDatabaseManager().saveSpawner(new DatabaseManager.StoredSpawner(
+                    session.spawner.world, session.spawner.x, session.spawner.y, session.spawner.z,
+                    session.spawner.type, session.spawner.stack, nextTier, session.spawner.owner
+                ));
 
-            plugin.getHologramManager().updateSpawnerHologram(
-                session.block.getLocation(), session.spawner.type, session.spawner.stack, nextTier
-            );
-
-            player.sendMessage(plugin.getConfigManager().getPrefix() + "§aSpawner upgraded to tier " + nextTier + "!");
+                plugin.getHologramManager().updateSpawnerHologram(
+                    session.block.getLocation(), session.spawner.type, session.spawner.stack, nextTier
+                );
+                
+                player.sendMessage(plugin.getConfigManager().getPrefix() + ColorUtil.color("&aSpawner upgraded to tier " + nextTier + "!"));
+            } else {
+                // Hand-held spawner - can't upgrade, viewing only
+                player.sendMessage(plugin.getConfigManager().getPrefix() + ColorUtil.color("&cYou can only upgrade placed spawners!"));
+                player.closeInventory();
+                return;
+            }
+            
             player.closeInventory();
             
-            // Reopen with updated data
             DatabaseManager.StoredSpawner updated = plugin.getDatabaseManager().getSpawner(
                 session.spawner.world, session.spawner.x, session.spawner.y, session.spawner.z
             );
@@ -300,14 +314,14 @@ public class SpawnerUpgradeGUI implements Listener {
                 }, 1L);
             }
         } catch (Exception e) {
-            player.sendMessage(plugin.getConfigManager().getPrefix() + "§cError upgrading spawner!");
+            player.sendMessage(plugin.getConfigManager().getPrefix() + ColorUtil.color("&cError upgrading spawner!"));
             e.printStackTrace();
         }
     }
 
     @EventHandler
     public void onClose(InventoryCloseEvent event) {
-        if (event.getView().getTitle().equals("§6§lSpawner Upgrade Station")) {
+        if (event.getView().getTitle().equals(ColorUtil.color("&6&lSpawner Upgrade Station"))) {
             sessions.remove(event.getPlayer().getUniqueId());
         }
     }

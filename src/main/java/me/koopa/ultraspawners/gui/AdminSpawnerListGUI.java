@@ -2,6 +2,7 @@ package me.koopa.ultraspawners.gui;
 
 import me.koopa.ultraspawners.UltraSpawners;
 import me.koopa.ultraspawners.database.DatabaseManager;
+import me.koopa.ultraspawners.util.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,7 +28,7 @@ public class AdminSpawnerListGUI implements Listener {
     }
 
     public void open(Player player, int page) {
-        Inventory inv = Bukkit.createInventory(null, 54, "§c§lAdmin: All Spawners (Page " + (page + 1) + ")");
+        Inventory inv = Bukkit.createInventory(null, 54, ColorUtil.color("&c&lAdmin: All Spawners (Page " + (page + 1) + ")"));
 
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              Statement stmt = conn.createStatement();
@@ -85,19 +86,19 @@ public class AdminSpawnerListGUI implements Listener {
         ItemStack item = new ItemStack(Material.SPAWNER);
         ItemMeta meta = item.getItemMeta();
 
-        meta.setDisplayName("§6" + formatMobName(type) + " Spawner");
+        meta.setDisplayName(ColorUtil.color("&6" + formatMobName(type) + " Spawner"));
 
         List<String> lore = new ArrayList<>();
         lore.add("");
-        lore.add("§7Location: §f" + x + ", " + y + ", " + z);
-        lore.add("§7World: §f" + getWorldName(world));
-        lore.add("§7Stack: §e" + String.format("%,d", stack));
-        lore.add("§7Tier: §b" + tier);
+        lore.add(ColorUtil.color("&7Location: &f" + x + ", " + y + ", " + z));
+        lore.add(ColorUtil.color("&7World: &f" + getWorldName(world)));
+        lore.add(ColorUtil.color("&7Stack: &e" + String.format("%,d", stack)));
+        lore.add(ColorUtil.color("&7Tier: &b" + tier));
         if (owner != null) {
-            lore.add("§7Owner: §f" + owner);
+            lore.add(ColorUtil.color("&7Owner: &f" + owner));
         }
         lore.add("");
-        lore.add("§8Click to teleport");
+        lore.add(ColorUtil.color("&8Click to teleport"));
 
         meta.setLore(lore);
         item.setItemMeta(meta);
@@ -108,7 +109,7 @@ public class AdminSpawnerListGUI implements Listener {
         ItemStack item = new ItemStack(Material.BOOK);
         ItemMeta meta = item.getItemMeta();
 
-        meta.setDisplayName("§e§lSpawner Statistics");
+        meta.setDisplayName(ColorUtil.color("&e&lSpawner Statistics"));
 
         List<String> lore = new ArrayList<>();
         lore.add("");
@@ -116,30 +117,27 @@ public class AdminSpawnerListGUI implements Listener {
         try (Connection conn = plugin.getDatabaseManager().getConnection();
              Statement stmt = conn.createStatement()) {
 
-            // Total spawners
             try (ResultSet rs = stmt.executeQuery("SELECT COUNT(*) as total FROM ultraspawners_spawners")) {
                 if (rs.next()) {
-                    lore.add("§7Total Spawners: §f" + rs.getInt("total"));
+                    lore.add(ColorUtil.color("&7Total Spawners: &f" + rs.getInt("total")));
                 }
             }
 
-            // Total stack
             try (ResultSet rs = stmt.executeQuery("SELECT SUM(stack) as total FROM ultraspawners_spawners")) {
                 if (rs.next()) {
-                    lore.add("§7Total Stack: §e" + String.format("%,d", rs.getInt("total")));
+                    lore.add(ColorUtil.color("&7Total Stack: &e" + String.format("%,d", rs.getInt("total"))));
                 }
             }
 
-            // Top mob type
             try (ResultSet rs = stmt.executeQuery(
                 "SELECT type, COUNT(*) as count FROM ultraspawners_spawners GROUP BY type ORDER BY count DESC LIMIT 1")) {
                 if (rs.next()) {
-                    lore.add("§7Most Common: §f" + formatMobName(rs.getString("type")));
+                    lore.add(ColorUtil.color("&7Most Common: &f" + formatMobName(rs.getString("type"))));
                 }
             }
 
         } catch (Exception e) {
-            lore.add("§cError loading stats");
+            lore.add(ColorUtil.color("&cError loading stats"));
         }
 
         meta.setLore(lore);
@@ -150,7 +148,7 @@ public class AdminSpawnerListGUI implements Listener {
     private ItemStack createPreviousButton() {
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§e§l← Previous Page");
+        meta.setDisplayName(ColorUtil.color("&e&l← Previous Page"));
         item.setItemMeta(meta);
         return item;
     }
@@ -158,7 +156,7 @@ public class AdminSpawnerListGUI implements Listener {
     private ItemStack createNextButton() {
         ItemStack item = new ItemStack(Material.ARROW);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§e§lNext Page →");
+        meta.setDisplayName(ColorUtil.color("&e&lNext Page →"));
         item.setItemMeta(meta);
         return item;
     }
@@ -166,7 +164,7 @@ public class AdminSpawnerListGUI implements Listener {
     private ItemStack createCloseButton() {
         ItemStack item = new ItemStack(Material.BARRIER);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§c§lClose");
+        meta.setDisplayName(ColorUtil.color("&c&lClose"));
         item.setItemMeta(meta);
         return item;
     }
@@ -175,7 +173,7 @@ public class AdminSpawnerListGUI implements Listener {
     public void onClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) return;
         String title = event.getView().getTitle();
-        if (!title.startsWith("§c§lAdmin: All Spawners")) return;
+        if (!title.startsWith(ColorUtil.color("&c&lAdmin: All Spawners"))) return;
 
         event.setCancelled(true);
 

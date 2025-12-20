@@ -1,5 +1,6 @@
 package me.koopa.ultraspawners.config;
 
+import me.koopa.ultraspawners.util.ColorUtil;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -39,7 +40,7 @@ public class ConfigManager {
     }
 
     public String getPrefix() {
-        return config.getString("general.prefix", "&8[&5UltraSpawners&8] &r");
+        return ColorUtil.color(config.getString("general.prefix", "&8[&5UltraSpawners&8] &r"));
     }
 
     public boolean isDebug() {
@@ -64,6 +65,14 @@ public class ConfigManager {
 
     public boolean canMergeDifferentTypes() {
         return config.getBoolean("stacking.mergeDifferentTypes", false);
+    }
+
+    public boolean isMergeSameTierOnly() {
+        return config.getBoolean("stacking.mergeSameTierOnly", false);
+    }
+
+    public boolean isPreferHigherTierOnMerge() {
+        return config.getBoolean("stacking.preferHigherTierOnMerge", true);
     }
 
     public boolean isUpgradesEnabled() {
@@ -100,12 +109,17 @@ public class ConfigManager {
     }
 
     public String getVaultDisabledMessage() {
-        return config.getString("economy.vaultDisabledMessage", 
-            "&cVault is disabled or not installed. Use item payment instead.");
+        return ColorUtil.color(config.getString("economy.vaultDisabledMessage", 
+            "&cVault is disabled or not installed. Use item payment instead."));
     }
 
     public int getSpawnCapPerTrigger() {
         return config.getInt("performance.spawnCapPerTrigger", 20);
+    }
+
+    public int getWorldSpawnCap(String worldName) {
+        // Return -1 if not set (use default)
+        return config.getInt("performance.worldSpawnCaps." + worldName, -1);
     }
 
     public boolean isTpsGuardEnabled() {

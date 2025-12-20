@@ -8,6 +8,7 @@ import me.koopa.ultraspawners.gui.SpawnerUpgradeGUI;
 import me.koopa.ultraspawners.gui.UpgradeMenu;
 import me.koopa.ultraspawners.service.SpawnerService;
 import me.koopa.ultraspawners.spawner.SpawnerItemBuilder;
+import me.koopa.ultraspawners.util.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -102,33 +103,33 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 
     private boolean handleReload(CommandSender sender, String[] args) {
         if (!sender.hasPermission("ultraspawners.admin")) {
-            sender.sendMessage("§cNo permission!");
+            sender.sendMessage(ColorUtil.color("&cNo permission!"));
             return true;
         }
 
         try {
             configManager.reloadConfig();
-            sender.sendMessage(configManager.getPrefix() + "§aConfig reloaded!");
+            sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&aConfig reloaded!"));
         } catch (Exception e) {
-            sender.sendMessage(configManager.getPrefix() + "§cError reloading config!");
+            sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&cError reloading config!"));
         }
         return true;
     }
 
     private boolean handleGive(CommandSender sender, String[] args) {
         if (!sender.hasPermission("ultraspawners.give")) {
-            sender.sendMessage("§cNo permission!");
+            sender.sendMessage(ColorUtil.color("&cNo permission!"));
             return true;
         }
 
         if (args.length < 3) {
-            sender.sendMessage("§cUsage: /ultraspawners give <player> <type> [stack] [tier]");
+            sender.sendMessage(ColorUtil.color("&cUsage: /ultraspawners give <player> <type> [stack] [tier]"));
             return true;
         }
 
         Player target = Bukkit.getPlayer(args[1]);
         if (target == null) {
-            sender.sendMessage("§cPlayer not found!");
+            sender.sendMessage(ColorUtil.color("&cPlayer not found!"));
             return true;
         }
 
@@ -136,7 +137,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         try {
             type = EntityType.valueOf(args[2].toUpperCase());
         } catch (IllegalArgumentException e) {
-            sender.sendMessage("§cInvalid entity type!");
+            sender.sendMessage(ColorUtil.color("&cInvalid entity type!"));
             return true;
         }
 
@@ -149,24 +150,24 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         ItemStack item = spawnerService.getItemBuilder().buildSpawnerItem(type, stack, tier);
         target.getInventory().addItem(item);
 
-        sender.sendMessage(configManager.getPrefix() + "§aGave " + stack + "x " + type.name() + " (Tier " + tier + ") to " + target.getName());
+        sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&aGave 1x " + type.name() + " Spawner (Stack: " + stack + ", Tier: " + tier + ") to " + target.getName()));
         return true;
     }
 
     private boolean handleInspect(CommandSender sender, String[] args) {
         if (!sender.hasPermission("ultraspawners.use")) {
-            sender.sendMessage("§cNo permission!");
+            sender.sendMessage(ColorUtil.color("&cNo permission!"));
             return true;
         }
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cThis command is only for players!");
+            sender.sendMessage(ColorUtil.color("&cThis command is only for players!"));
             return true;
         }
 
         Block target = player.getTargetBlockExact(5);
         if (target == null || target.getType() != Material.SPAWNER) {
-            sender.sendMessage("§cYou must look at a spawner!");
+            sender.sendMessage(ColorUtil.color("&cYou must look at a spawner!"));
             return true;
         }
 
@@ -176,42 +177,42 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             );
 
             if (spawner == null) {
-                sender.sendMessage(configManager.getPrefix() + "§cNo spawner data found!");
+                sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&cNo spawner data found!"));
                 return true;
             }
 
-            sender.sendMessage(configManager.getPrefix() + "§aSpawner Info:");
-            sender.sendMessage("  §7Type: §r" + spawner.type);
-            sender.sendMessage("  §7Stack: §r" + spawner.stack);
-            sender.sendMessage("  §7Tier: §r" + spawner.tier);
+            sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&aSpawner Info:"));
+            sender.sendMessage(ColorUtil.color("  &7Type: &f" + spawner.type));
+            sender.sendMessage(ColorUtil.color("  &7Stack: &f" + spawner.stack));
+            sender.sendMessage(ColorUtil.color("  &7Tier: &f" + spawner.tier));
             if (spawner.owner != null) {
-                sender.sendMessage("  §7Owner: §r" + spawner.owner);
+                sender.sendMessage(ColorUtil.color("  &7Owner: &f" + spawner.owner));
             }
         } catch (Exception e) {
-            sender.sendMessage(configManager.getPrefix() + "§cError inspecting spawner!");
+            sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&cError inspecting spawner!"));
         }
         return true;
     }
 
     private boolean handleSetType(CommandSender sender, String[] args) {
         if (!sender.hasPermission("ultraspawners.edit")) {
-            sender.sendMessage("§cNo permission!");
+            sender.sendMessage(ColorUtil.color("&cNo permission!"));
             return true;
         }
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cThis command is only for players!");
+            sender.sendMessage(ColorUtil.color("&cThis command is only for players!"));
             return true;
         }
 
         if (args.length < 2) {
-            sender.sendMessage("§cUsage: /ultraspawners settype <type>");
+            sender.sendMessage(ColorUtil.color("&cUsage: /ultraspawners settype <type>"));
             return true;
         }
 
         Block target = player.getTargetBlockExact(5);
         if (target == null || target.getType() != Material.SPAWNER) {
-            sender.sendMessage("§cYou must look at a spawner!");
+            sender.sendMessage(ColorUtil.color("&cYou must look at a spawner!"));
             return true;
         }
 
@@ -219,7 +220,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         try {
             type = EntityType.valueOf(args[1].toUpperCase());
         } catch (IllegalArgumentException e) {
-            sender.sendMessage("§cInvalid entity type!");
+            sender.sendMessage(ColorUtil.color("&cInvalid entity type!"));
             return true;
         }
 
@@ -229,7 +230,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             );
 
             if (spawner == null) {
-                sender.sendMessage(configManager.getPrefix() + "§cNo spawner found!");
+                sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&cNo spawner found!"));
                 return true;
             }
 
@@ -242,32 +243,32 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 target.getLocation(), type.name(), spawner.stack, spawner.tier
             );
 
-            sender.sendMessage(configManager.getPrefix() + "§aType set to " + type.name());
+            sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&aType set to " + type.name()));
         } catch (Exception e) {
-            sender.sendMessage(configManager.getPrefix() + "§cError setting type!");
+            sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&cError setting type!"));
         }
         return true;
     }
 
     private boolean handleSetStack(CommandSender sender, String[] args) {
         if (!sender.hasPermission("ultraspawners.edit")) {
-            sender.sendMessage("§cNo permission!");
+            sender.sendMessage(ColorUtil.color("&cNo permission!"));
             return true;
         }
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cThis command is only for players!");
+            sender.sendMessage(ColorUtil.color("&cThis command is only for players!"));
             return true;
         }
 
         if (args.length < 2) {
-            sender.sendMessage("§cUsage: /ultraspawners setstack <amount>");
+            sender.sendMessage(ColorUtil.color("&cUsage: /ultraspawners setstack <amount>"));
             return true;
         }
 
         Block target = player.getTargetBlockExact(5);
         if (target == null || target.getType() != Material.SPAWNER) {
-            sender.sendMessage("§cYou must look at a spawner!");
+            sender.sendMessage(ColorUtil.color("&cYou must look at a spawner!"));
             return true;
         }
 
@@ -276,7 +277,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             stack = Integer.parseInt(args[1]);
             stack = Math.min(stack, configManager.getMaxStackPerBlock());
         } catch (NumberFormatException e) {
-            sender.sendMessage("§cInvalid number!");
+            sender.sendMessage(ColorUtil.color("&cInvalid number!"));
             return true;
         }
 
@@ -286,7 +287,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             );
 
             if (spawner == null) {
-                sender.sendMessage(configManager.getPrefix() + "§cNo spawner found!");
+                sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&cNo spawner found!"));
                 return true;
             }
 
@@ -299,32 +300,32 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 target.getLocation(), spawner.type, stack, spawner.tier
             );
 
-            sender.sendMessage(configManager.getPrefix() + "§aStack set to " + stack);
+            sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&aStack set to " + stack));
         } catch (Exception e) {
-            sender.sendMessage(configManager.getPrefix() + "§cError setting stack!");
+            sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&cError setting stack!"));
         }
         return true;
     }
 
     private boolean handleSetTier(CommandSender sender, String[] args) {
         if (!sender.hasPermission("ultraspawners.edit")) {
-            sender.sendMessage("§cNo permission!");
+            sender.sendMessage(ColorUtil.color("&cNo permission!"));
             return true;
         }
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cThis command is only for players!");
+            sender.sendMessage(ColorUtil.color("&cThis command is only for players!"));
             return true;
         }
 
         if (args.length < 2) {
-            sender.sendMessage("§cUsage: /ultraspawners settier <tier>");
+            sender.sendMessage(ColorUtil.color("&cUsage: /ultraspawners settier <tier>"));
             return true;
         }
 
         Block target = player.getTargetBlockExact(5);
         if (target == null || target.getType() != Material.SPAWNER) {
-            sender.sendMessage("§cYou must look at a spawner!");
+            sender.sendMessage(ColorUtil.color("&cYou must look at a spawner!"));
             return true;
         }
 
@@ -333,7 +334,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             tier = Integer.parseInt(args[1]);
             tier = Math.min(tier, configManager.getMaxTier());
         } catch (NumberFormatException e) {
-            sender.sendMessage("§cInvalid number!");
+            sender.sendMessage(ColorUtil.color("&cInvalid number!"));
             return true;
         }
 
@@ -343,7 +344,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             );
 
             if (spawner == null) {
-                sender.sendMessage(configManager.getPrefix() + "§cNo spawner found!");
+                sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&cNo spawner found!"));
                 return true;
             }
 
@@ -356,52 +357,60 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
                 target.getLocation(), spawner.type, spawner.stack, tier
             );
 
-            sender.sendMessage(configManager.getPrefix() + "§aTier set to " + tier);
+            sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&aTier set to " + tier));
         } catch (Exception e) {
-            sender.sendMessage(configManager.getPrefix() + "§cError setting tier!");
+            sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&cError setting tier!"));
         }
         return true;
     }
 
     private boolean handleMenu(CommandSender sender, String[] args) {
         if (!sender.hasPermission("ultraspawners.menu")) {
-            sender.sendMessage("§cNo permission!");
+            sender.sendMessage(ColorUtil.color("&cNo permission!"));
             return true;
         }
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cThis command is only for players!");
+            sender.sendMessage(ColorUtil.color("&cThis command is only for players!"));
             return true;
         }
 
         if (!configManager.isUpgradesEnabled()) {
-            sender.sendMessage(configManager.getPrefix() + "§cUpgrades are disabled!");
+            sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&cUpgrades are disabled!"));
             return true;
         }
 
         Block target = player.getTargetBlockExact(5);
         if (target == null || target.getType() != Material.SPAWNER) {
-            sender.sendMessage("§cYou must look at a spawner!");
+            sender.sendMessage(ColorUtil.color("&cYou must look at a spawner!"));
             return true;
         }
 
         try {
-            UpgradeMenu menu = new UpgradeMenu(plugin, spawnerService, configManager, databaseManager);
-            menu.open(player, target);
+            DatabaseManager.StoredSpawner spawner = databaseManager.getSpawner(
+                target.getWorld().getUID().toString(), target.getX(), target.getY(), target.getZ()
+            );
+            
+            if (spawner != null) {
+                plugin.getSpawnerUpgradeGUI().open(player, target, spawner);
+            } else {
+                sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&cNo spawner data found!"));
+            }
         } catch (Exception e) {
-            sender.sendMessage(configManager.getPrefix() + "§cError opening menu!");
+            sender.sendMessage(configManager.getPrefix() + ColorUtil.color("&cError opening menu!"));
+            e.printStackTrace();
         }
         return true;
     }
 
     private boolean handleList(CommandSender sender, String[] args) {
         if (!sender.hasPermission("ultraspawners.admin")) {
-            sender.sendMessage("§cNo permission!");
+            sender.sendMessage(ColorUtil.color("&cNo permission!"));
             return true;
         }
 
         if (!(sender instanceof Player player)) {
-            sender.sendMessage("§cThis command is only for players!");
+            sender.sendMessage(ColorUtil.color("&cThis command is only for players!"));
             return true;
         }
 
@@ -411,14 +420,14 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     }
 
     private void sendHelp(CommandSender sender) {
-        sender.sendMessage("§8=== §5UltraSpawners §8===");
-        sender.sendMessage("§7/ultraspawners reload §8- §7Reload config");
-        sender.sendMessage("§7/ultraspawners give <player> <type> [stack] [tier] §8- §7Give spawner");
-        sender.sendMessage("§7/ultraspawners inspect §8- §7Inspect spawner");
-        sender.sendMessage("§7/ultraspawners settype <type> §8- §7Set mob type");
-        sender.sendMessage("§7/ultraspawners setstack <amount> §8- §7Set stack amount");
-        sender.sendMessage("§7/ultraspawners settier <tier> §8- §7Set upgrade tier");
-        sender.sendMessage("§7/ultraspawners menu §8- §7Open upgrade menu");
-        sender.sendMessage("§7/ultraspawners list §8- §7Admin: View all spawners");
+        sender.sendMessage(ColorUtil.color("&8=== &5UltraSpawners &8==="));
+        sender.sendMessage(ColorUtil.color("&7/ultraspawners reload &8- &7Reload config"));
+        sender.sendMessage(ColorUtil.color("&7/ultraspawners give <player> <type> [stack] [tier] &8- &7Give spawner"));
+        sender.sendMessage(ColorUtil.color("&7/ultraspawners inspect &8- &7Inspect spawner"));
+        sender.sendMessage(ColorUtil.color("&7/ultraspawners settype <type> &8- &7Set mob type"));
+        sender.sendMessage(ColorUtil.color("&7/ultraspawners setstack <amount> &8- &7Set stack amount"));
+        sender.sendMessage(ColorUtil.color("&7/ultraspawners settier <tier> &8- &7Set upgrade tier"));
+        sender.sendMessage(ColorUtil.color("&7/ultraspawners menu &8- &7Open upgrade menu"));
+        sender.sendMessage(ColorUtil.color("&7/ultraspawners list &8- &7Admin: View all spawners"));
     }
 }

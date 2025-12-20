@@ -2,6 +2,7 @@ package me.koopa.ultraspawners.spawner;
 
 import me.koopa.ultraspawners.UltraSpawners;
 import me.koopa.ultraspawners.config.ConfigManager;
+import me.koopa.ultraspawners.util.ColorUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
@@ -26,19 +27,19 @@ public class SpawnerItemBuilder {
         ItemMeta meta = item.getItemMeta();
 
         if (meta != null) {
-            meta.setDisplayName("§f" + formatEntityName(entityType));
+            meta.setDisplayName(ColorUtil.color("&f" + formatEntityName(entityType)));
             
             List<String> lore = new ArrayList<>();
             
             ConfigManager.TierConfig tierConfig = configManager.getTierConfig(tier);
             if (tierConfig != null) {
-                lore.add("§7Tier: §r" + tierConfig.displayName);
+                lore.add(ColorUtil.color("&7Tier: &r" + tierConfig.displayName));
             } else {
-                lore.add("§7Tier: §rUnknown");
+                lore.add(ColorUtil.color("&7Tier: &rUnknown"));
             }
             
-            lore.add("§7Stack: §r" + stack);
-            lore.add("§7Mob Type: §r" + entityType.name());
+            lore.add(ColorUtil.color("&7Stack: &r" + stack));
+            lore.add(ColorUtil.color("&7Mob Type: &r" + entityType.name()));
             
             meta.setLore(lore);
             
@@ -61,7 +62,7 @@ public class SpawnerItemBuilder {
         if (meta != null) {
             List<String> lore = new ArrayList<>(meta.getLore());
             if (owner != null && !owner.isEmpty()) {
-                lore.add("§7Owner: §r" + owner);
+                lore.add(ColorUtil.color("&7Owner: &r" + owner));
             }
             meta.setLore(lore);
             item.setItemMeta(meta);

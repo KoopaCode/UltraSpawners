@@ -21,6 +21,10 @@ stacking:
   maxStackPerBlock: 0
   # Merge different mob types (false = keep separate)
   mergeDifferentTypes: false
+  # Only merge if tiers match (true = require same tier to merge)
+  mergeSameTierOnly: false
+  # When merging spawners of different tiers, prefer the higher tier (true/false)
+  preferHigherTierOnMerge: true
 
 upgrades:
   # Enable upgrade system
@@ -106,6 +110,12 @@ performance:
   tpsThreshold: 15.0
   # Minimum spawn count even at low TPS
   minimumSpawnAtLowTps: 1
+
+  # Optional per-world spawn caps (override spawnCapPerTrigger)
+  # Example:
+  # worldSpawnCaps:
+  #   world: 10
+  #   world_nether: 5
 
 storage:
   # Database type: SQLITE or MYSQL

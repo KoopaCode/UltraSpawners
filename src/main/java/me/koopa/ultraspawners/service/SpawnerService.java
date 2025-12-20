@@ -4,6 +4,7 @@ import me.koopa.ultraspawners.UltraSpawners;
 import me.koopa.ultraspawners.config.ConfigManager;
 import me.koopa.ultraspawners.database.DatabaseManager;
 import me.koopa.ultraspawners.spawner.SpawnerItemBuilder;
+import me.koopa.ultraspawners.util.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -48,23 +49,36 @@ public class SpawnerService {
         DatabaseManager.StoredSpawner existing = databaseManager.getSpawner(
             block.getWorld().getUID().toString(), block.getX(), block.getY(), block.getZ()
         );
-
         if (existing != null) {
+            // Merge logic
             if (configManager.isStackingEnabled()) {
-                if (existing.type.equals(type.name())) {
+                String existingType = existing.type;
+                boolean sameType = existingType.equals(type.name());
+
+                if (sameType || configManager.canMergeDifferentTypes()) {
+                    int existingTier = existing.tier;
+                    int placingTier = tier;
+
+                    // Apply configured merge rgules
+                    if (configManager.isMergeSameTierOnly() && existingTier != placingTier) {
+                        // Do not merge if tie must match
+                        return;
+                    }
+
                     int maxStack = configManager.getMaxStackPerBlock();
                     int newStack = maxStack > 0 ? Math.min(existing.stack + stack, maxStack) : existing.stack + stack;
+
+                    int newTier = existingTier;
+                    if (configManager.isPreferHigherTierOnMerge()) {
+                        newTier = Math.max(existingTier, placingTier);
+                    }
+
                     databaseManager.saveSpawner(new DatabaseManager.StoredSpawner(
                         existing.world, existing.x, existing.y, existing.z,
-                        existing.type, newStack, Math.max(existing.tier, tier), existing.owner
+                        sameType ? existingType : type.name(), newStack, newTier, existing.owner
                     ));
-                } else if (configManager.canMergeDifferentTypes()) {
-                    int maxStack = configManager.getMaxStackPerBlock();
-                    int newStack = maxStack > 0 ? Math.min(existing.stack + stack, maxStack) : existing.stack + stack;
-                    databaseManager.saveSpawner(new DatabaseManager.StoredSpawner(
-                        existing.world, existing.x, existing.y, existing.z,
-                        type.name(), newStack, Math.max(existing.tier, tier), existing.owner
-                    ));
+
+                    return;
                 }
             }
         } else {
@@ -73,6 +87,89 @@ public class SpawnerService {
                 type.name(), stack, tier, player != null ? player.getName() : null
             ));
         }
+    }
+
+    public boolean mergeSpawnerAt(Block existingBlock, ItemStack item, Player player) {
+        try {
+            if (!itemBuilder.isSpawnerItem(item)) return false;
+
+            DatabaseManager.StoredSpawner existing = databaseManager.getSpawner(
+                existingBlock.getWorld().getUID().toString(),
+                existingBlock.getX(), existingBlock.getY(), existingBlock.getZ()
+            );
+            if (existing == null) return false;
+
+            EntityType placingType = itemBuilder.getEntityType(item);
+            int placingStack = itemBuilder.getStack(item);
+            int placingTier = itemBuilder.getTier(item);
+
+            String existingType = existing.type;
+            boolean sameType = existingType.equals(placingType.name());
+
+            if (!sameType && !configManager.canMergeDifferentTypes()) {
+                return false;
+            }
+
+            if (configManager.isMergeSameTierOnly() && existing.tier != placingTier) {
+                return false;
+            }
+
+            int maxStack = configManager.getMaxStackPerBlock();
+            int newStack = maxStack > 0 ? Math.min(existing.stack + placingStack, maxStack) : existing.stack + placingStack;
+            int newTier = configManager.isPreferHigherTierOnMerge() ? Math.max(existing.tier, placingTier) : existing.tier;
+
+            databaseManager.saveSpawner(new DatabaseManager.StoredSpawner(
+                existing.world, existing.x, existing.y, existing.z,
+                sameType ? existingType : placingType.name(), newStack, newTier, existing.owner
+            ));
+
+            // Update hologram
+            plugin.getHologramManager().updateSpawnerHologram(existingBlock.getLocation(), sameType ? existingType : placingType.name(), newStack, newTier);
+
+            // Consume one item from player's hand
+            if (player != null) {
+                ItemStack hand = player.getInventory().getItemInMainHand();
+                if (hand != null) {
+                    if (hand.getAmount() > 1) hand.setAmount(hand.getAmount() - 1);
+                    else player.getInventory().setItemInMainHand(null);
+                }
+                player.sendMessage(ColorUtil.color("&aStacked spawner! New stack: &e" + newStack));
+            }
+
+            return true;
+        } catch (Exception e) {
+            plugin.getLogger().severe("Error merging spawner: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public Block findNearbySpawnerForMerge(org.bukkit.Location placeLoc, ItemStack item) {
+        if (!itemBuilder.isSpawnerItem(item)) return null;
+        
+        EntityType placingType = itemBuilder.getEntityType(item);
+        int searchRadius = 2;
+        
+        for (int x = -searchRadius; x <= searchRadius; x++) {
+            for (int y = -searchRadius; y <= searchRadius; y++) {
+                for (int z = -searchRadius; z <= searchRadius; z++) {
+                    if (x == 0 && y == 0 && z == 0) continue;
+                    
+                    Block checkBlock = placeLoc.clone().add(x, y, z).getBlock();
+                    if (checkBlock.getType() == Material.SPAWNER) {
+                        try {
+                            DatabaseManager.StoredSpawner stored = databaseManager.getSpawner(
+                                checkBlock.getWorld().getUID().toString(),
+                                checkBlock.getX(), checkBlock.getY(), checkBlock.getZ()
+                            );
+                            if (stored != null && stored.type.equals(placingType.name())) {
+                                return checkBlock;
+                            }
+                        } catch (Exception ignored) {}
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public void breakSpawner(Block block) throws SQLException {
@@ -139,7 +236,7 @@ public class SpawnerService {
             }
             vaultHook.withdraw(player, tierConfig.vaultCost);
         } else if ("VAULT".equals(configManager.getPaymentMode())) {
-            player.sendMessage("§cVault is not enabled. Use item payment instead.");
+            player.sendMessage(ColorUtil.color("&cVault is not enabled. Use item payment instead."));
             return -5;
         }
 
@@ -201,5 +298,19 @@ public class SpawnerService {
         }
         int scaled = Math.max(configManager.getMinimumSpawnAtLowTps(), baseCount / 2);
         return Math.min(scaled, configManager.getSpawnCapPerTrigger());
+    }
+
+    public int getSpawnCapForWorld(String worldName) {
+        int worldCap = configManager.getWorldSpawnCap(worldName);
+        return worldCap >= 0 ? worldCap : configManager.getSpawnCapPerTrigger();
+    }
+
+    public int getScaledSpawnCount(int baseCount, String worldName) {
+        int cap = getSpawnCapForWorld(worldName);
+        if (!shouldScaleSpawns()) {
+            return Math.min(baseCount, cap);
+        }
+        int scaled = Math.max(configManager.getMinimumSpawnAtLowTps(), baseCount / 2);
+        return Math.min(scaled, cap);
     }
 }

@@ -4,6 +4,7 @@ import com.modrinth.statsapi.StatsAPI;
 import me.koopa.ultraspawners.command.CommandHandler;
 import me.koopa.ultraspawners.config.ConfigManager;
 import me.koopa.ultraspawners.database.DatabaseManager;
+import me.koopa.ultraspawners.gui.SpawnerUpgradeGUI;
 import me.koopa.ultraspawners.hologram.HologramManager;
 import me.koopa.ultraspawners.hologram.MobStackManager;
 import me.koopa.ultraspawners.listener.BlockBreakListener;
@@ -27,6 +28,7 @@ public class UltraSpawners extends JavaPlugin {
     private VaultHook vaultHook;
     private HologramManager hologramManager;
     private MobStackManager mobStackManager;
+    private SpawnerUpgradeGUI spawnerUpgradeGUI;
     private VersionChecker versionChecker;
     private StatsAPI metrics;
 
@@ -74,6 +76,10 @@ public class UltraSpawners extends JavaPlugin {
         
         // Initialize spawner service
         spawnerService = new SpawnerService(this, databaseManager, configManager, vaultHook);
+        
+        // Initialize GUI singleton
+        spawnerUpgradeGUI = new SpawnerUpgradeGUI(this);
+        Bukkit.getPluginManager().registerEvents(spawnerUpgradeGUI, this);
         
         // Register event listeners
         Bukkit.getPluginManager().registerEvents(new BlockPlaceListener(this, spawnerService, configManager), this);
@@ -147,6 +153,10 @@ public class UltraSpawners extends JavaPlugin {
 
     public MobStackManager getMobStackManager() {
         return mobStackManager;
+    }
+
+    public SpawnerUpgradeGUI getSpawnerUpgradeGUI() {
+        return spawnerUpgradeGUI;
     }
 
     public VersionChecker getVersionChecker() {
