@@ -36,7 +36,7 @@ public class PlayerJoinListener implements Listener {
                 // Send update notification to player
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     player.sendMessage("§8§m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-                    player.sendMessage("§6⚠ UPDATE AVAILABLE §6§l⚠");
+                    player.sendMessage("§6⚠ UPDATE AVAILABLE §6⚠");
                     player.sendMessage("");
                     player.sendMessage("§7New update available for §e" + updateInfo.pluginName);
                     player.sendMessage("§7Current Version: §c" + updateInfo.currentVersion + " §7→ Latest: §a" + updateInfo.latestVersion);
